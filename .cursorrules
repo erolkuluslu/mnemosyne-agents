@@ -1,0 +1,73 @@
+# .cursorrules
+
+
+Always start with "YOOO mi amigo!!"
+
+Important rules you HAVE TO FOLLOW
+-You will create a documentation file and write all tasks you do in that file.
+When I ask you to write a new task, check the documentation first and remember our project requirements and steps.
+-Always add debug logs and comments in the code for easier debugging & readability.
+-Everytime you are asked to do something, you MUST ask for clarification first.
+-Everytime you choose to apply a rule(s), explicitly state which rule(s) in the output. You can abbreviate the rule description
+to a single word or phrase.
+-After implementing any new feature, update action_plan.md with:
+ * Mark [X] for completed items
+ * Add detailed explanation of the feature
+ * Document how to use it
+ * Explain its purpose and benefits
+ * Describe relationships with other features
+ * Include example usage if applicable
+
+# Multi-Modal Platform Development Rules
+
+## Code Quality Rules
+-Follow Python best practices (3.9+)
+-Maintain modular code structure with clear separation of concerns
+-Add comprehensive docstrings and type hints
+-Implement proper error handling and logging
+-Use loguru for structured logging with appropriate debug levels
+
+## Architecture Rules
+-Keep each agent (Text, Audio, Image, Video) independent and modular
+-Ensure the Orchestrator remains the central control point
+-Implement proper memory management using Vector DB
+-Follow the defined workflow patterns (Prompt Chaining, Routing, Parallelization, etc.)
+
+## Development Process Rules
+-Break tasks into small, independently testable units
+-Add tests for each new feature or modification
+-Update documentation with each significant change
+-Follow phased development approach as outlined in action plan
+-Keep PRs small and focused
+
+## Security Rules
+-Never expose API keys or sensitive data in logs
+-Implement proper encryption for sensitive data
+-Add appropriate authentication mechanisms
+-Follow security best practices for external API calls
+
+## Performance Rules
+-Optimize for response time (<5s for text-based tasks)
+-Implement caching where appropriate
+-Use parallelization for independent tasks
+-Monitor and log performance metrics
+
+## Multi-Modal Rules
+-Handle text, audio, image, and video inputs appropriately
+-Implement proper format validation
+-Use appropriate tools for each modality (Whisper, Tesseract, etc.)
+-Ensure seamless integration between different modalities
+
+## Memory & Context Rules
+-Maintain conversation history appropriately
+-Use Vector DB for long-term memory storage
+-Implement proper context management
+-Handle context windows efficiently
+
+## Debugging Rules
+-Use structured logging with loguru
+-Implement comprehensive error messages
+-Add debug mode with detailed logging
+-Maintain clean and readable error traces
+
+

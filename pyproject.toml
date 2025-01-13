@@ -1,0 +1,58 @@
+[project]
+name = "mnemosyne-agents"
+version = "0.1.0"
+description = "Multi-modal agentic platform with LLM routing capabilities"
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+dependencies = [
+    "phidata>=2.1.0",
+    "openai>=1.35.8",
+    "anthropic>=0.30.1",
+    "aisuite[all]>=0.1.7",
+    "faster-whisper>=0.10.0",
+    "soundfile==0.12.1",
+    "numpy>=1.24.3",
+    "torch>=2.0.0",
+    "torchaudio>=2.0.0",
+    "TTS>=0.22.0",
+    "noisereduce>=3.0.0",
+    "easyocr>=1.7.1",
+    "pillow>=10.0.0",
+    "opencv-python>=4.8.0",
+    "diffusers>=0.25.0",
+    "transformers>=4.36.0",
+    "accelerate>=0.27.0",
+    "safetensors>=0.4.1",
+    "compel>=2.0.2",
+    "controlnet-aux>=0.0.7",
+    "python-dotenv==1.0.0",
+    "loguru==0.7.2",
+    "rich==13.7.0",
+    "pydantic>=2.3.0",
+]
+requires-python = ">=3.9"
+readme = "README.md"
+license = { text = "MIT" }
+
+[project.optional-dependencies]
+dev = [
+    "ruff==0.1.8",
+    "black==23.12.1",
+    "pytest==7.4.3",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["mnemosyne"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.black]
+line-length = 88
+target-version = ["py39"] 
