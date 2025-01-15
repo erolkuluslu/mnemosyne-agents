@@ -1,4 +1,3 @@
-```markdown
 # Updated Action Plan for Multi-Modal Agentic Platform
 
 Below is an **updated action plan** that factors in the new Orchestrator code you've added. This roadmap continues to follow the **phased** approach, but now explicitly acknowledges the **Orchestrator** foundation already in place. The steps are broken into **bite-sized, independently codable tasks**, ensuring each one yields a meaningful improvement while maintaining **Separation of Concerns** and a **Layered Architecture**.
@@ -181,15 +180,176 @@ A more robust memory mechanism and retrieval-augmented generation to reduce hall
 
 ---
 
-### 3.2 Security & Hardening
-1. **Auth & Encryption**  
-   - If needed, add an API key or OAuth-based authentication for your orchestrator endpoints.  
-   - Encrypt sensitive data at rest (e.g. transcripts, user info).
-2. **Error Handling**  
-   - Ensure timeouts, rate limiting, and fallback handling for external LLM or STT/OTT calls.
+### 3.2 [X] Security & Hardening
+1. **Auth & Encryption** [X]
+   - Implemented Fernet-based encryption for sensitive data
+   - Added configurable encryption key management
+2. **Error Handling** [X]
+   - Added exponential backoff retry mechanism
+   - Implemented configurable timeouts and retry limits
 
-**Outcome**:  
-A more reliable system that can handle production-level constraints.
+**Usage**:
+```python
+# Encryption
+from mnemosyne.security import Security, SecurityConfig
+
+security = Security(
+    config=SecurityConfig(
+        max_retries=3,
+        initial_wait=1.0,
+        max_wait=30.0
+    )
+)
+
+# Encrypt sensitive data
+encrypted = security.encrypt_data(sensitive_data)
+decrypted = security.decrypt_data(encrypted)
+
+# Retry mechanism
+@Security.with_retries(max_tries=3, initial_wait=1.0, max_wait=5.0)
+async def flaky_operation():
+    # Your code here
+    pass
+```
+
+**Purpose**: Ensures data security and system reliability.
+**Related Features**: 
+- Works with all agents to protect sensitive data (OCR results, audio transcripts)
+- Enhances reliability of external API calls with retry mechanism
+
+---
+
+### 3.3 [X] Performance & Monitoring
+1. **Caching** [X]
+   - Implemented TTL-based caching for embeddings and LLM responses
+   - Added size limits and automatic cleanup of old entries
+2. **Rate Limiting** [X]
+   - Added per-user and global rate limits
+   - Implemented type-specific limits (embedding/LLM)
+   - Added exponential backoff for retries
+
+**Usage**:
+```python
+from mnemosyne.caching import CacheManager, CacheConfig, RateLimitConfig
+
+# Initialize cache manager
+cache_manager = CacheManager(
+    cache_config=CacheConfig(
+        embedding_ttl=3600,  # 1 hour
+        llm_response_ttl=1800,  # 30 minutes
+        max_embedding_size=10000,
+        max_llm_size=1000
+    ),
+    rate_limit_config=RateLimitConfig(
+        user_limit=100,  # Per minute
+        global_limit=1000,  # Per minute
+        embedding_limit=500,  # Per minute
+        llm_limit=200  # Per minute
+    )
+)
+
+# Use decorators for automatic caching and rate limiting
+@cache_embedding(cache_manager=cache_manager)
+async def generate_embedding(text: str):
+    # Your embedding code here
+    pass
+
+@cache_llm_response(cache_manager=cache_manager)
+async def generate_response(prompt: str):
+    # Your LLM code here
+    pass
+```
+
+**Purpose**: Improves performance and reliability while controlling resource usage.
+**Related Features**:
+- Works with VectorStore for efficient embedding management
+- Enhances Orchestrator with response caching
+- Protects external APIs with rate limiting
+
+---
+
+### 3.4 Advanced Workflows [X]
+
+#### Prompt Chaining Library [X]
+1. **Core Implementation** [X]
+   - Created flexible `PromptChain` class with support for:
+     - Linear chains (A → B → C)
+     - Branching chains (A → [B1, B2] → C)
+     - Dynamic chain modification during execution
+     - Per-node validation before execution
+   - Added comprehensive logging and error handling
+
+2. **Node Types** [X]
+   - PROMPT: LLM prompt nodes
+   - BRANCH: Conditional branching nodes
+   - MERGE: Combine results from multiple paths
+   - TOOL: External tool/function calls
+
+3. **Features** [X]
+   - Context Management:
+     - Variables passed between nodes
+     - Results tracking
+     - Execution path history
+   - Dynamic Modification:
+     - Add/remove nodes during execution
+     - Modify connections between nodes
+     - Conditional path selection
+
+**Usage**:
+```python
+from mnemosyne.chains import (
+    PromptChain,
+    ChainNodeType,
+    create_linear_chain,
+    create_branching_chain
+)
+
+# Create a linear chain
+chain = create_linear_chain(
+    "text_processor",
+    prompts=[
+        "Analyze this text: {input_text}",
+        "Summarize the analysis: {processed_text}"
+    ],
+    tools=[{
+        "name": "text_processor",
+        "params": {"text": "{input_text}"}
+    }]
+)
+
+# Execute with context
+results = await chain.execute(
+    initial_context={"input_text": "Hello, World!"},
+    tools={"text_processor": my_tool}
+)
+
+# Create a branching chain
+branch_chain = create_branching_chain(
+    "classifier",
+    condition_prompt="Is this a question: {input_text}",
+    true_branch=["Answer: {input_text}"],
+    false_branch=["Process: {input_text}"]
+)
+
+# Dynamic modification
+chain.add_node(...)
+chain.connect(from_id, to_id)
+```
+
+**Purpose**: Enables creation of complex, dynamic prompt workflows.
+
+**Benefits**:
+- Modular and reusable prompt patterns
+- Flexible workflow construction
+- Dynamic adaptation to results
+- Built-in validation and error handling
+- Comprehensive logging for debugging
+
+**Related Features**:
+- Integrates with caching system for LLM responses
+- Works with rate limiting for external API calls
+- Supports all agent types (Text, Audio, Image, Video)
+- Compatible with security module for sensitive data
 
 ---
 
