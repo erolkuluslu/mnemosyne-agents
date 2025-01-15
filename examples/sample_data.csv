@@ -1,0 +1,11 @@
+id,name,age,salary,department
+1,John Doe,35,75000,Engineering
+2,Jane Smith,28,65000,Marketing
+3,Bob Johnson,42,85000,Engineering
+4,Alice Brown,31,70000,Sales
+5,Charlie Wilson,39,80000,Engineering
+6,Diana Lee,33,72000,Marketing
+7,Edward Chen,45,90000,Sales
+8,Fiona Wright,29,68000,Marketing
+9,George Kim,37,78000,Engineering
+10,Helen Park,34,71000,Sales 
