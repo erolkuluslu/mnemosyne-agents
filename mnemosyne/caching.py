@@ -1,5 +1,34 @@
 """
 Caching module for embeddings and LLM responses.
+
+Key Components:
+1. Configuration Classes:
+   - CacheConfig: Defines caching parameters such as TTL and maximum sizes.
+   - RateLimitConfig: Sets up rate limiting for user and global requests.
+
+2. CacheEntry Class: Represents a single cache entry with data and expiration time.
+
+3. Cache Class: Implements the caching mechanism, allowing for storing and retrieving data based on generated keys, 
+   enforcing size limits, and removing the oldest entries when necessary.
+
+4. RateLimiter Class: Manages request limits for users and globally, ensuring the system is not overwhelmed by too many requests.
+
+5. CacheManager Class: A higher-level interface for managing caching and rate limiting, integrating both functionalities 
+   into the overall workflow of the platform.
+
+6. Caching Decorators: Provides decorators for caching embeddings and LLM responses automatically, enhancing performance 
+   without modifying core function logic.
+
+Usage:
+- Create an instance of CacheManager to manage caching and rate limiting.
+- Decorate functions with caching decorators to automatically handle caching.
+
+Capabilities:
+- Reduces redundant computations and API calls, improving efficiency.
+- Provides control over request limits, ensuring fair usage.
+- Essential for maintaining responsiveness and reliability under heavy load.
+
+This module is integral to building efficient and responsive AI applications across different modalities.
 """
 from typing import Any, Optional, Dict, List
 from pydantic import BaseModel

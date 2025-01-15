@@ -524,12 +524,97 @@ refined_content, history = await evaluator.evaluate_and_refine(
 
 ## Phase 5: Performance, Monitoring, & CI/CD
 
-1. **Caching & Rate Control**  
-   - Cache repeated LLM responses to reduce API calls.  
-   - Implement basic rate limiting if supporting many concurrent users.
-2. **Metrics**  
-   - Track usage stats, latencies, error rates. Possibly integrate with Prometheus or similar monitoring.
-3. **Continuous Integration**  
+### 5.1 Performance Monitoring [X]
+
+1. **Metrics Collection** [X]
+   - Created flexible `PerformanceMetrics` class with support for:
+     - Request counts and latencies
+     - Error tracking
+     - Worker and queue metrics
+     - Memory usage monitoring
+   - Added Prometheus integration for metrics export
+
+2. **Monitoring Tools** [X]
+   - Implemented context managers for tracking:
+     - Request durations and outcomes
+     - Worker activity
+     - Queue sizes
+   - Added comprehensive error tracking
+   - Created metrics aggregation and summaries
+
+3. **Component Integration** [X]
+   - Created `MonitoredComponent` base class
+   - Added monitoring decorators and utilities
+   - Implemented background metric collection
+
+**Usage**:
+```python
+from mnemosyne.monitoring import (
+    PerformanceMetrics,
+    MonitoredComponent
+)
+
+# Initialize metrics with Prometheus
+metrics = PerformanceMetrics(port=8000)
+
+# Create monitored component
+class MyComponent(MonitoredComponent):
+    def __init__(self, metrics):
+        super().__init__(metrics)
+    
+    async def process(self, data):
+        # Track operation metrics
+        async with self.track_operation(
+            operation="process",
+            agent_type="processor"
+        ):
+            # Your code here
+            pass
+        
+        # Track worker metrics
+        async with self.track_worker(
+            agent_type="processor"
+        ):
+            # Worker code here
+            pass
+        
+        # Record errors
+        self.record_error(
+            error_type="ValidationError",
+            agent_type="processor"
+        )
+        
+        # Update queue metrics
+        self.update_queue_size(
+            size=len(queue),
+            agent_type="processor"
+        )
+
+# Get metrics summary
+summary = metrics.get_summary(
+    agent_type="processor",
+    window=timedelta(minutes=5)
+)
+```
+
+**Purpose**: Enables comprehensive performance monitoring and debugging.
+
+**Benefits**:
+- Real-time performance tracking
+- Prometheus integration for visualization
+- Flexible metric collection
+- Error tracking and analysis
+- Queue and worker monitoring
+
+**Related Features**:
+- Works with all components and agents
+- Integrates with logging system
+- Compatible with worker pool
+- Supports the security module
+
+### 5.2 CI/CD Pipeline
+
+1. **Continuous Integration**  
    - Set up tests to run on each pull request (e.g., GitHub Actions).  
    - Automatically build Docker images on merges to `main`.
 
